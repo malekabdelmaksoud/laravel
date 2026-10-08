@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +14,5 @@ Route::get('/heure', function () {
         'heure' => now()->format('H:i'),
         'date' => now()->format('d/m/Y'),
     ]);
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 });
