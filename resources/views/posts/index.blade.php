@@ -6,8 +6,11 @@
     <ul class="mt-6 space-y-4">
         @foreach ($posts as $slug => $post)
             <li class="rounded border border-gray-200 bg-white p-4">
-                <p class="text-xl font-medium">{{ $post['title'] }}</p>
-                <p class="mt-1 text-sm text-gray-500">Publié en {{ $post['year'] }}</p>
+                <a href="{{ route('posts.show', $slug) }}" class="text-xl font-medium text-red-600 hover:underline">{{ $post['title'] }}</a>
+                <p class="mt-1 text-sm text-gray-500">
+                    Publié en
+                    <a href="{{ route('posts.archive', $post['year']) }}" class="underline">{{ $post['year'] }}</a>
+                </p>
             </li>
         @endforeach
     </ul>
