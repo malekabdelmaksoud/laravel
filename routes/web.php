@@ -17,16 +17,17 @@ Route::get('/version', function () {
 Route::get('/heure', function () {
     return view('heure');
 });
+   Route::get('/a-propos', function () {
+    return view('a-propos', [
+        'auteur' => 'MELEKABDELMAKSOUD',
+        'groupe' => 'MDW32',
+    ]);});
 Route::get('/bienvenue', function () {
     return view('bienvenue', [
         'etudiant' => 'melek abdelmaksoud',
         'groupe' => 'MDW32',
         'cours' => 'Atelier Framework Côté Serveur',
     ]);
-    Route::get('/a-propos', function () {
-    return view('a-propos', [
-        'auteur' => 'MELEKABDELMAKSOUD',
-        'groupe' => 'MDW32',
-    ]);
-});
+ 
+
 });
