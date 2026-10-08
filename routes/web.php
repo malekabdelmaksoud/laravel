@@ -23,4 +23,10 @@ Route::get('/bienvenue', function () {
         'groupe' => 'MDW32',
         'cours' => 'Atelier Framework Côté Serveur',
     ]);
+    Route::get('/a-propos', function () {
+    return view('a-propos', [
+        'auteur' => 'MELEKABDELMAKSOUD',
+        'groupe' => 'MDW32',
+    ]);
+});
 });
