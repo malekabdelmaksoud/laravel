@@ -15,12 +15,14 @@ Route::get('/heure', function () {
     ]);
 });
 
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::prefix('posts')->name('posts.')->group(function () {
+    Route::get('/', [PostController::class, 'index'])->name('index');
 
-Route::get('/posts/archive/{year}', [PostController::class, 'archive'])
-    ->whereNumber('year')
-    ->name('posts.archive');
+    Route::get('/archive/{year}', [PostController::class, 'archive'])
+        ->whereNumber('year')
+        ->name('archive');
 
-Route::get('/posts/{slug}', [PostController::class, 'show'])
-    ->where('slug', '[a-z0-9-]+')
-    ->name('posts.show');
+    Route::get('/{slug}', [PostController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name('show');
+});
