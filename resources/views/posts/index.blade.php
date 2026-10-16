@@ -1,17 +1,15 @@
 <x-layout>
     <x-slot:title>{{ $heading }} - Mini-CMS</x-slot:title>
 
-    <h1 class="text-3xl font-bold">{{ $heading }}</h1>
+    <h1 class="text-3xl font-bold mb-6">{{ $heading }}</h1>
 
-    <ul class="mt-6 space-y-4">
-        @foreach ($posts as $slug => $post)
-            <li class="rounded border border-gray-200 bg-white p-4">
-                <a href="{{ route('posts.show', $slug) }}" class="text-xl font-medium text-red-600 hover:underline">{{ $post['title'] }}</a>
-                <p class="mt-1 text-sm text-gray-500">
-                    Publié en
-                    <a href="{{ route('posts.archive', $post['year']) }}" class="underline">{{ $post['year'] }}</a>
-                </p>
-            </li>
-        @endforeach
-    </ul>
+    <div class="grid gap-6 md:grid-cols-2">
+        @forelse ($posts as $post)
+            <x-post-card :post="$post" />
+        @empty
+            <x-alert type="warning" title="Aucun article" class="md:col-span-2">
+                Il n'y a pas encore d'article publié.
+            </x-alert>
+        @endforelse
+    </div>
 </x-layout>
