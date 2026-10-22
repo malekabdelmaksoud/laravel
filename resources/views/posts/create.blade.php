@@ -1,39 +1,57 @@
-@extends('layouts.app')
+<x-layout>
+    <x-slot:title>Nouvel article - Mini-CMS</x-slot:title>
 
-@section('content')
-<div class="container mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-6">Create New Post</h1>
+    <x-page-header title="Nouvel article" subtitle="Chaque champ est vérifié par le serveur." />
+
     @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <strong>Whoops! Something went wrong.</strong>
-            <ul class="mt-2 list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+        <x-alert type="error" title="Le formulaire contient des erreurs" class="mb-6 max-w-2xl">
+            Corrigez les champs signalés, puis envoyez à nouveau.
+        </x-alert>
     @endif
-    <form action="{{ route('posts.store') }}" method="POST" class="space-y-4">
+
+    <form method="POST" action="{{ route('posts.store') }}" class="max-w-2xl space-y-5">
         @csrf
+
         <div>
-            <label for="title" class="block font-medium">Title</label>
-            <input type="text" name="title" id="title" value="{{ old('title') }}" class="w-full border rounded px-3 py-2" required>
+            <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
+            <input type="text" id="title" name="title" value="{{ old('title') }}" class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2">
+            @error('title')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
+
         <div>
-            <label for="slug" class="block font-medium">Slug</label>
-            <input type="text" name="slug" id="slug" value="{{ old('slug') }}" class="w-full border rounded px-3 py-2" required>
+            <label for="slug" class="block text-sm font-medium text-gray-700">Slug (minuscules, chiffres et tirets)</label>
+            <input type="text" id="slug" name="slug" value="{{ old('slug') }}" class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2">
+            @error('slug')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
+
         <div>
-            <label for="body" class="block font-medium">Body</label>
-            <textarea name="body" id="body" rows="8" class="w-full border rounded px-3 py-2" required>{{ old('body') }}</textarea>
+            <label for="excerpt" class="block text-sm font-medium text-gray-700">Extrait (facultatif, 255 caractères au plus)</label>
+            <input type="text" id="excerpt" name="excerpt" value="{{ old('excerpt') }}" class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2">
+            @error('excerpt')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
-        <div class="flex items-center">
-            <input type="checkbox" name="is_published" id="is_published" value="1" class="mr-2" {{ old('is_published') ? 'checked' : '' }}>
-            <label for="is_published" class="font-medium">Publish immediately</label>
-        </div>
+
         <div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save Post</button>
+            <label for="body" class="block text-sm font-medium text-gray-700">Contenu</label>
+            <textarea id="body" name="body" rows="8" class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2">{{ old('body') }}</textarea>
+            @error('body')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input type="checkbox" id="is_published" name="is_published" value="1" @checked(old('is_published'))>
+            <label for="is_published" class="text-sm text-gray-700">Publier immédiatement</label>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button type="submit" class="rounded-md bg-indigo-600 px-5 py-2.5 font-medium text-white hover:bg-indigo-700">Enregistrer</button>
+            <a href="{{ route('posts.index') }}" class="text-sm text-gray-600 hover:underline">Annuler</a>
         </div>
     </form>
-</div>
-@endsection
+</x-layout>
