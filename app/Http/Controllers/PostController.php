@@ -22,7 +22,7 @@ class PostController extends Controller
     {
         return view('posts.index', [
             'heading' => 'Articles de '.$year,
-            'posts' => Post::whereYear('published_at', $year)->latest('id')->paginate(4),
+            'posts' => Post::published()->whereYear('published_at', $year)->latest('id')->paginate(4),
         ]);
     }
 
@@ -77,8 +77,22 @@ class PostController extends Controller
         return redirect()->route('posts.show', $post);
     }
 
-    public function destroy(Post $post)
+    public function destroy(Post $post): RedirectResponse
     {
-        //
+        $post->delete();
+
+        return redirect()->route('posts.index');
+    }
+
+    public function togglePublication(Post $post): RedirectResponse
+    {
+        $isPublished = ! $post->is_published;
+
+        $post->update([
+            'is_published' => $isPublished,
+            'published_at' => $isPublished ? now() : null,
+        ]);
+
+        return redirect()->route('posts.show', $post);
     }
 }
