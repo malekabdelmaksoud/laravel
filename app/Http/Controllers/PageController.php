@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -15,13 +17,16 @@ class PageController extends Controller
                 ->latest('published_at')
                 ->take(3)
                 ->get(),
+            'categories' => Category::withCount(['posts' => fn (Builder $query) => $query->published()])
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
     public function about(): View
     {
         return view('a-propos', [
-            'auteur' => 'melekabdelmaksoud',
+            'auteur' => 'Prenom Nom',
             'groupe' => 'MDW32',
         ]);
     }
