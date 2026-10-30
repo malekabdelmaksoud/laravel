@@ -19,3 +19,15 @@ génère un seul SELECT avec une sous-requête COUNT() filtrée par is_published
 Sans withCount(), il faudrait charger tous les tags puis appeler $tag->posts()->count()
 pour chacun, ce qui produirait N requêtes (une par tag) — le problème N+1.
 withCount() résout tout en une seule requête SQL.
+
+## Bonus PostgreSQL
+
+Pourquoi aucune migration, aucun modèle et aucun test n'a changé ?
+Parce que Laravel est conçu pour être indépendant du moteur de base de données.
+Les migrations utilisent le Schema Builder de Laravel qui génère le SQL adapté
+au driver configuré (SQLite, PostgreSQL, MySQL...).
+Les modèles Eloquent font de même : les requêtes sont construites via le Query Builder
+qui traduit en SQL compatible avec le driver actif.
+Les tests restent sur SQLite en mémoire (phpunit.xml) car ils sont rapides et isolés ;
+changer le driver de l'app n'affecte pas la configuration de test.
+Résultat : zéro ligne de code modifiée pour passer de SQLite à PostgreSQL.
