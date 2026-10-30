@@ -88,3 +88,37 @@ it('counts the published posts of each category on the home page', function () {
         ->assertOk()
         ->assertSee('Tutoriels (2)');
 });
+
+it('lists only the published posts of a tag by its slug', function () {
+    $tag = Tag::factory()->create(['name' => 'Laravel', 'slug' => 'laravel']);
+    $published = Post::factory()->published()->create(['title' => 'Article publié Laravel']);
+    $draft = Post::factory()->create(['title' => 'Brouillon Laravel']);
+    $other = Post::factory()->published()->create(['title' => 'Autre tag']);
+    $published->tags()->attach($tag);
+    $draft->tags()->attach($tag);
+
+    $this->get(route('posts.tag', $tag))
+        ->assertOk()
+        ->assertSee('Article publié Laravel')
+        ->assertDontSee('Brouillon Laravel')
+        ->assertDontSee('Autre tag');
+});
+
+it('returns 404 for an unknown tag slug', function () {
+    $this->get('/posts/tag/inconnu')->assertNotFound();
+});
+
+it('hides a tag with only drafts and shows the count for published posts on the home page', function () {
+    $tagWithDrafts = Tag::factory()->create(['name' => 'DraftOnly', 'slug' => 'draft-only']);
+    $draft = Post::factory()->create(['title' => 'Brouillon']);
+    $draft->tags()->attach($tagWithDrafts);
+
+    $tagPopular = Tag::factory()->create(['name' => 'Popular', 'slug' => 'popular']);
+    $published = Post::factory(2)->published()->create();
+    $published->each(fn ($post) => $post->tags()->attach($tagPopular));
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertDontSee('DraftOnly')
+        ->assertSee('Popular (2)');
+});

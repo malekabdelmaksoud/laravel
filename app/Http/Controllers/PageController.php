@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
@@ -20,6 +21,14 @@ class PageController extends Controller
             'categories' => Category::withCount(['posts' => fn (Builder $query) => $query->published()])
                 ->orderBy('name')
                 ->get(),
+            'tags' => Tag::withCount(['posts' => fn (Builder $query) => $query->published()])
+                ->get()
+                ->filter(fn (Tag $tag) => $tag->posts_count > 0)
+                ->sortBy([
+                    ['posts_count', 'desc'],
+                    ['name', 'asc'],
+                ])
+                ->values(),
         ]);
     }
 
