@@ -29,7 +29,15 @@ return Application::configure(basePath: dirname(__DIR__))
             $previous = $e->getPrevious();
 
             if ($previous instanceof ModelNotFoundException && $previous->getModel() === Post::class) {
-                return response()->view('errors.article-introuvable', [], 404);
+                $recentPosts = Post::published()
+                    ->with('user', 'category', 'tags')
+                    ->latest('published_at')
+                    ->take(3)
+                    ->get();
+
+                return response()->view('errors.article-introuvable', [
+                    'recentPosts' => $recentPosts,
+                ], 404);
             }
 
             return null;

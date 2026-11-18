@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Post;
+use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
     $this->withoutVite();
@@ -42,4 +43,22 @@ it('keeps the standard 404 page for an unknown category', function () {
     $this->get('/posts/categorie/inconnue')
         ->assertNotFound()
         ->assertDontSee('Article introuvable');
+});
+
+it('shows the read-only banner on the homepage when site is read-only', function () {
+    Config::set('site.read_only', true);
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('Site en lecture seule');
+});
+
+it('shows a published post but not a draft on the unknown post page', function () {
+    $published = Post::factory()->published()->create(['title' => 'Article Visible']);
+    $draft = Post::factory()->create(['title' => 'Brouillon Secret']);
+
+    $this->get('/posts/999')
+        ->assertNotFound()
+        ->assertSee('Article Visible')
+        ->assertDontSee('Brouillon Secret');
 });
