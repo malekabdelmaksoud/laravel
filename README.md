@@ -5,12 +5,12 @@ Projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13, PHP 8.3+), 3
 Auteur : Prenom Nom, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (\`lab-01\`, \`lab-01b\`, puis un tag par session).
-## État actuel (tag lab-04b)
+## État actuel (tag lab-05b)
 
-- Formulaires d'article : catégorie (liste déroulante) et tags (cases à cocher, synchronisés avec `sync()`).
-- Pages publiques par catégorie et par tag, liées par slug (`{category:slug}`, `{tag:slug}`).
-- Accueil : catégories et tags populaires comptés avec `withCount`, articles publiés seulement.
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest` et `PostTaxonomyTest`.
+- Back-office des catégories et des tags sous `/admin` (`CategoryController`, `TagController`), protégé par le middleware `writable`, avec Form Requests et messages flash.
+- Messages de validation en français (`lang/fr/validation.php`, `APP_LOCALE=fr`), avec des noms de champs lisibles et un message propre au slug des catégories.
+- Pages 404 et 503 affichées dans le layout du site (`resources/views/errors`).
+- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest` et `ErrorPagesTest`.
 
 
 
@@ -102,6 +102,14 @@ Ouvrir ensuite [http://localhost:8000](http://localhost:8000) (adresse de l'appl
 
 ![Page des articles d'une catégorie](screenshots/s08-page-categorie.png)
 
+### Session 10
+
+Back-office des catégories et des tags, messages de validation en français, pages 404 et 503 dans le layout du site.
+
+![Formulaire de catégorie envoyé vide, avec les messages de validation en français](screenshots/s10-validation.png)
+
+![Page 404 du site pour une adresse inconnue](screenshots/s10-404.png)
+
 ## Routes disponibles
 
 | Méthode | URI | Nom | Action |
@@ -120,3 +128,15 @@ Ouvrir ensuite [http://localhost:8000](http://localhost:8000) (adresse de l'appl
 | PUT | `/posts/{post}` | `posts.update` | `PostController@update` |
 | DELETE | `/posts/{post}` | `posts.destroy` | `PostController@destroy` |
 | PATCH | `/posts/{post}/publication` | `posts.publication` | `PostController@togglePublication` |
+| GET | `/admin/categories` | `admin.categories.index` | `CategoryController@index` |
+| GET | `/admin/categories/create` | `admin.categories.create` | `CategoryController@create` |
+| POST | `/admin/categories` | `admin.categories.store` | `CategoryController@store` |
+| GET | `/admin/categories/{category}/edit` | `admin.categories.edit` | `CategoryController@edit` |
+| PUT | `/admin/categories/{category}` | `admin.categories.update` | `CategoryController@update` |
+| DELETE | `/admin/categories/{category}` | `admin.categories.destroy` | `CategoryController@destroy` |
+| GET | `/admin/tags` | `admin.tags.index` | `TagController@index` |
+| GET | `/admin/tags/create` | `admin.tags.create` | `TagController@create` |
+| POST | `/admin/tags` | `admin.tags.store` | `TagController@store` |
+| GET | `/admin/tags/{tag}/edit` | `admin.tags.edit` | `TagController@edit` |
+| PUT | `/admin/tags/{tag}` | `admin.tags.update` | `TagController@update` |
+| DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
