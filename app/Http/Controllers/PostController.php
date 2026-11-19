@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +21,18 @@ class PostController extends Controller
         return view('posts.index', [
             'heading' => 'Tous les articles',
             'posts' => Post::with('user', 'category', 'tags')->latest('id')->paginate(4),
+        ]);
+    }
+
+    public function mine(Request $request): View
+    {
+        return view('posts.index', [
+            'heading' => 'Mes articles',
+            'posts' => $request->user()
+                ->posts()
+                ->with('user', 'category', 'tags')
+                ->latest('id')
+                ->paginate(4),
         ]);
     }
 

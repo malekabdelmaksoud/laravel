@@ -93,3 +93,28 @@ it('keeps the category back office for admins', function () {
         ->get(route('admin.categories.index'))
         ->assertOk();
 });
+
+it('shows only the logged-in users posts on the my posts page', function () {
+    $author = User::factory()->create();
+    $otherAuthor = User::factory()->create();
+
+    Post::factory()->create([
+        'title' => 'Mon article personnel',
+        'user_id' => $author->id,
+    ]);
+    Post::factory()->create([
+        'title' => 'Article d’un autre auteur',
+        'user_id' => $otherAuthor->id,
+    ]);
+
+    $this->actingAs($author)
+        ->get(route('my-posts'))
+        ->assertOk()
+        ->assertSee('Mon article personnel')
+        ->assertDontSee('Article d’un autre auteur');
+});
+
+it('redirects a guest from the my posts page to login', function () {
+    $this->get(route('my-posts'))
+        ->assertRedirect(route('login'));
+});
