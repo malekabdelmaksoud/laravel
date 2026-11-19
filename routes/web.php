@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
@@ -15,6 +16,11 @@ Route::get('/posts/archive/{year}', [PostController::class, 'archive'])
     ->name('posts.archive');
 Route::get('/posts/categorie/{category:slug}', [PostController::class, 'byCategory'])->name('posts.category');
 Route::get('/posts/tag/{tag:slug}', [PostController::class, 'byTag'])->name('posts.tag');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/inscription', [RegisterController::class, 'create'])->name('register');
+    Route::post('/inscription', [RegisterController::class, 'store'])->name('register.store');
+});
 
 Route::middleware('writable')->group(function () {
     Route::resource('posts', PostController::class);
