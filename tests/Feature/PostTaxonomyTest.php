@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\User;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 function taxonomyPostData(array $overrides = []): array
