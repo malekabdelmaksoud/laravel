@@ -21,6 +21,8 @@ class PostResource extends JsonResource
             'excerpt' => $this->excerpt,
             'published_at' => $this->published_at?->toIso8601String(),
             'url' => route('posts.show', $this->resource),
+            'author' => $this->whenLoaded('user', fn () => $this->user->name),
+            'category' => new CategoryResource($this->whenLoaded('category')),
         ];
     }
 }
