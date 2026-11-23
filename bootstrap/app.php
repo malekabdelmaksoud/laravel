@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Middleware\EnsureSiteIsWritable;
-use App\Models\Category;
-use App\Models\Post;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\\Http\\Middleware\\EnsureSiteIsWritable;
+use App\\Http\\Middleware\\EnsureUserIsAdmin;
+use App\\Models\\Category;
+use App\\Models\\Post;
+use Illuminate\\Database\\Eloquent\\ModelNotFoundException;
+use Illuminate\\Foundation\\Application;
+use Illuminate\\Foundation\\Configuration\\Exceptions;
+use Illuminate\\Foundation\\Configuration\\Middleware;
+use Illuminate\\Http\\Request;
+use Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'writable' => EnsureSiteIsWritable::class,
+            'admin' => EnsureUserIsAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
