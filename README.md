@@ -156,8 +156,8 @@ Back-office des catégories et des tags, messages de validation en français, pa
 - Les utilisateurs ayant le rôle `author` reçoivent une réponse 403 ; les administrateurs accèdent à la gestion des catégories et des tags.
 - Gates `manage-categories` et `manage-tags` : les liens correspondants sont affichés uniquement aux administrateurs.
 - Les Form Requests et le contrôleur des tags vérifient le Gate `manage-tags`.
-- La `PostPolicy` couvre la consultation, la création, la modification, la suppression et la restauration des articles. Les brouillons ne sont pas visibles publiquement ; leur auteur et les administrateurs peuvent les consulter.
-- Tests d'autorisation dans `tests/Feature/AuthorizationTest.php`.
+- La `PostPolicy` couvre la consultation, la création, la modification et la suppression des articles. Les brouillons ne sont visibles que par leur auteur et les administrateurs, sur leur page et dans `/posts` grâce au scope `visibleTo()`.
+- Tests d'autorisation : `tests/Feature/AdminAccessTest.php` (7 tests) et `tests/Feature/PostVisibilityTest.php` (5 tests).
 
 Les tests doivent être exécutés localement avec `php artisan test` avant la validation finale.
 
