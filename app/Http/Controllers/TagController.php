@@ -1,13 +1,13 @@
 <?php
 
-namespace App\\Http\\Controllers;
+namespace App\Http\Controllers;
 
-use App\\Http\\Requests\\StoreTagRequest;
-use App\\Http\\Requests\\UpdateTagRequest;
-use App\\Models\\Tag;
-use Illuminate\\Http\\RedirectResponse;
-use Illuminate\\Support\\Facades\\Gate;
-use Illuminate\\View\\View;
+use App\Http\Requests\StoreTagRequest;
+use App\Http\Requests\UpdateTagRequest;
+use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class TagController extends Controller
 {

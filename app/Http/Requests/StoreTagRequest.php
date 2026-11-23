@@ -1,9 +1,8 @@
 <?php
 
-namespace App\\Http\\Requests;
+namespace App\Http\Requests;
 
-use Illuminate\\Contracts\\Validation\\ValidationRule;
-use Illuminate\\Foundation\\Http\\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTagRequest extends FormRequest
 {

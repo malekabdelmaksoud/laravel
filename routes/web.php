@@ -1,12 +1,12 @@
 <?php
 
-use App\\Http\\Controllers\\Auth\\LoginController;
-use App\\Http\\Controllers\\Auth\\RegisterController;
-use App\\Http\\Controllers\\CategoryController;
-use App\\Http\\Controllers\\PageController;
-use App\\Http\\Controllers\\PostController;
-use App\\Http\\Controllers\\TagController;
-use Illuminate\\Support\\Facades\\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\TagController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/a-propos', [PageController::class, 'about'])->name('about');
