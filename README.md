@@ -150,3 +150,14 @@ Back-office des catégories et des tags, messages de validation en français, pa
 | GET | `/admin/tags/{tag}/edit` | `admin.tags.edit` | `TagController@edit` |
 | PUT | `/admin/tags/{tag}` | `admin.tags.update` | `TagController@update` |
 | DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
+
+### Session 12 — Autorisation et rôles
+
+- Middleware `admin` enregistré dans `bootstrap/app.php` et appliqué à toutes les routes du back-office `/admin`.
+- Les utilisateurs ayant le rôle `author` reçoivent une réponse 403 ; les administrateurs accèdent à la gestion des catégories et des tags.
+- Gates `manage-categories` et `manage-tags` : les liens correspondants sont affichés uniquement aux administrateurs.
+- Les Form Requests et le contrôleur des tags vérifient le Gate `manage-tags`.
+- La `PostPolicy` couvre la consultation, la création, la modification, la suppression et la restauration des articles. Les brouillons ne sont pas visibles publiquement ; leur auteur et les administrateurs peuvent les consulter.
+- Tests d'autorisation dans `tests/Feature/AuthorizationTest.php`.
+
+Les tests doivent être exécutés localement avec `php artisan test` avant la validation finale.
