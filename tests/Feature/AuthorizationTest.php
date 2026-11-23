@@ -118,3 +118,25 @@ it('redirects a guest from the my posts page to login', function () {
     $this->get(route('my-posts'))
         ->assertRedirect(route('login'));
 });
+
+
+it('forbids authors from managing tags and allows administrators', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('admin.tags.index'))
+        ->assertForbidden();
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->get(route('admin.tags.index'))
+        ->assertOk();
+});
+
+it('does not expose draft posts on the public listing or detail page', function () {
+    $author = User::factory()->create();
+    $draft = Post::factory()->create(['user_id' => $author->id]);
+
+    $this->get(route('posts.index'))
+        ->assertOk()
+        ->assertDontSee($draft->title);
+
+    $this->get(route('posts.show', $draft))->assertForbidden();
+});
