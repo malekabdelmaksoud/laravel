@@ -5,15 +5,14 @@ Projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13, PHP 8.3+), 3
 Auteur : Prenom Nom, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (\`lab-01\`, \`lab-01b\`, puis un tag par session).
-## État actuel (Lab 06 en cours)
+## État actuel (Session 12 — Lab 06b en préparation)
 
-- Back-office des catégories et des tags sous `/admin` (`CategoryController`, `TagController`), protégé par le middleware `writable`, avec Form Requests et messages flash.
-- Messages de validation en français (`lang/fr/validation.php`, `APP_LOCALE=fr`), avec des noms de champs lisibles et un message propre au slug des catégories.
-- Pages 404 et 503 affichées dans le layout du site (`resources/views/errors`).
-- Authentification : inscription, connexion/déconnexion et espace « Mes articles » réservé aux utilisateurs connectés.
-- Autorisation : la `PostPolicy` empêche un auteur de modifier l’article d’un autre utilisateur. Le test manuel de `/posts/9/edit` avec un compte différent a renvoyé `403 – This action is unauthorized.`
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest` et `ErrorPagesTest` (les tests complets restent à relancer avant validation finale).
-
+- Back-office des catégories et des tags sous `/admin`, protégé par le middleware `admin` ; seuls les administrateurs peuvent y accéder.
+- Gates `manage-categories` et `manage-tags` appliqués aux contrôleurs, aux Form Requests et aux liens du menu.
+- Les brouillons sont protégés par `PostPolicy` : ils sont visibles uniquement par leur auteur et les administrateurs.
+- Le scope `Post::visibleTo()` applique la même règle dans la liste publique `/posts`.
+- Tests d'autorisation : `AdminAccessTest` (7 tests) et `PostVisibilityTest` (5 tests), en complément des tests fonctionnels existants.
+- Les captures de la Session 12 et la validation finale de `php artisan test` restent à effectuer localement avant de poser et publier le tag `lab-06b`.
 
 
 ## Données de démonstration
@@ -161,3 +160,21 @@ Back-office des catégories et des tags, messages de validation en français, pa
 - Tests d'autorisation dans `tests/Feature/AuthorizationTest.php`.
 
 Les tests doivent être exécutés localement avec `php artisan test` avant la validation finale.
+
+
+## Comparaison avec le starter kit Livewire
+
+| Critère | Mini-CMS (authentification manuelle) | Starter kit Livewire |
+|---|---|---|
+| Routes d'authentification | Définies dans `routes/web.php` : inscription, connexion et déconnexion. | Enregistrées par Fortify depuis son paquet ; absentes de `routes/web.php`. |
+| Inscription | `Auth\\RegisterController`. | `app/Actions/Fortify/CreateNewUser.php` et `resources/views/pages/auth/register.blade.php`. |
+| Connexion | `Auth\\LoginController::store` avec `Auth::attempt()` et régénération de session. | Contrôleur Fortify et `resources/views/pages/auth/login.blade.php`. |
+| Déconnexion | `Auth\\LoginController::destroy` : logout, invalidation de session et régénération du token CSRF. | Route logout de Fortify et `app/Livewire/Actions/Logout.php`. |
+| Limitation des tentatives | Non implémentée dans Mini-CMS. | 5 tentatives par minute par e-mail et adresse IP, selon la configuration du kit étudiée dans le cours. |
+| Mot de passe oublié | Non implémenté. | Fonctionnalité de réinitialisation activable dans `config/fortify.php`. |
+| Vérification de l'e-mail | Non implémentée. | Fonctionnalité prévue par Fortify ; middleware `verified` sur le tableau de bord. |
+| Double authentification et passkeys | Non implémentées. | Fonctionnalités proposées par Fortify et configurables dans `config/fortify.php`. |
+| Rôles et autorisations | Colonne `role`, Gates, `PostPolicy` et middleware `admin`. | À développer dans l'application : le starter kit ne définit pas les rôles métier. |
+| Tests | Tests Pest dans `tests/Feature`, notamment authentification et autorisations. | Tests du kit dans `tests/Feature`, écrits avec PHPUnit dans le dépôt étudié. |
+
+Dans un vrai projet, je garderais du starter kit la gestion de l'authentification et les fonctions de sécurité déjà éprouvées. Je continuerais à écrire moi-même les rôles et les autorisations, car elles dépendent des règles métier propres à l'application.
