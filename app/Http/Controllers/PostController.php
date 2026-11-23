@@ -16,11 +16,11 @@ use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         return view('posts.index', [
             'heading' => 'Tous les articles',
-            'posts' => Post::published()->with('user', 'category', 'tags')->latest('id')->paginate(4),
+            'posts' => Post::visibleTo($request->user())->with('user', 'category', 'tags')->latest('id')->paginate(4),
         ]);
     }
 
