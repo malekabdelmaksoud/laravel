@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\User;
 use App\Models\Post;
 use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 function feedbackPostData(array $overrides = []): array
