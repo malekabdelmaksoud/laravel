@@ -5,14 +5,13 @@ Projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13, PHP 8.3+), 3
 Auteur : Prenom Nom, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (\`lab-01\`, \`lab-01b\`, puis un tag par session).
-## État actuel (Session 12 — Lab 06b en préparation)
+## État actuel (tag lab-06b)
 
-- Back-office des catégories et des tags sous `/admin`, protégé par le middleware `admin` ; seuls les administrateurs peuvent y accéder.
-- Gates `manage-categories` et `manage-tags` appliqués aux contrôleurs, aux Form Requests et aux liens du menu.
-- Les brouillons sont protégés par `PostPolicy` : ils sont visibles uniquement par leur auteur et les administrateurs.
-- Le scope `Post::visibleTo()` applique la même règle dans la liste publique `/posts`.
-- Tests d'autorisation : `AdminAccessTest` (7 tests) et `PostVisibilityTest` (5 tests), en complément des tests fonctionnels existants.
-- Les captures de la Session 12 et la validation finale de `php artisan test` restent à effectuer localement avant de poser et publier le tag `lab-06b`.
+- Middleware `admin` (`App\Http\Middleware\EnsureUserIsAdmin`) sur tout `/admin` : un auteur reçoit 403 « Réservé aux administrateurs. ».
+- Gate `manage-tags`, comme `manage-categories` : contrôleur, Form Requests et menu.
+- Brouillons protégés : `PostPolicy::view` et le scope `visibleTo` ; un brouillon n'est visible que par son auteur et les administrateurs.
+- Tests d'autorisation : `AdminAccessTest` (7 tests) et `PostVisibilityTest` (5 tests), en plus des fichiers de la session 11.
+- Comparaison écrite avec le starter kit Livewire (section ci-dessous).
 
 
 ## Données de démonstration
@@ -111,13 +110,17 @@ Back-office des catégories et des tags, messages de validation en français, pa
 
 ![Page 404 du site pour une adresse inconnue](screenshots/s10-404.png)
 
-### Lab 06 — Session 11
+### Session 11
 
-- Connexion vérifiée : le nom de l’utilisateur connecté et le message « Vous êtes connecté. » sont affichés.
-- Autorisation vérifiée : un utilisateur connecté ne peut pas modifier l’article n° 9, appartenant à un autre auteur ; Laravel répond `403 – This action is unauthorized.`.
-- Captures à conserver dans le dossier `screenshots/` :
-  - `s11-connexion.png` — page après connexion.
-  - `s11-interdit.png` — réponse 403 sur `/posts/9/edit`.
+![Barre de navigation d'un utilisateur connecté, avec le message « Vous êtes connecté. »](screenshots/s11-connexion.png)
+
+![Page 403 quand un auteur ouvre la modification de l'article d'un autre auteur](screenshots/s11-interdit.png)
+
+### Session 12
+
+![Page 403 « Réservé aux administrateurs. » pour un compte auteur sur /admin/tags](screenshots/s12-admin-interdit.png)
+
+![Barre de navigation d'un compte auteur, sans les liens Catégories et Tags](screenshots/s12-menu-auteur.png)
 
 ## Routes disponibles
 
@@ -149,27 +152,22 @@ Back-office des catégories et des tags, messages de validation en français, pa
 | GET | `/admin/tags/{tag}/edit` | `admin.tags.edit` | `TagController@edit` |
 | PUT | `/admin/tags/{tag}` | `admin.tags.update` | `TagController@update` |
 | DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
-
-### Session 12 — Autorisation et rôles
-
-- Middleware `admin` enregistré dans `bootstrap/app.php` et appliqué à toutes les routes du back-office `/admin`.
-- Les utilisateurs ayant le rôle `author` reçoivent une réponse 403 ; les administrateurs accèdent à la gestion des catégories et des tags.
-- Gates `manage-categories` et `manage-tags` : les liens correspondants sont affichés uniquement aux administrateurs.
-- Les Form Requests et le contrôleur des tags vérifient le Gate `manage-tags`.
-- La `PostPolicy` couvre la consultation, la création, la modification et la suppression des articles. Les brouillons ne sont visibles que par leur auteur et les administrateurs, sur leur page et dans `/posts` grâce au scope `visibleTo()`.
-- Tests d'autorisation : `tests/Feature/AdminAccessTest.php` (7 tests) et `tests/Feature/PostVisibilityTest.php` (5 tests).
-
-Les tests doivent être exécutés localement avec `php artisan test` avant la validation finale.
-
+| GET | `/admin/utilisateurs` | `admin.users.index` | `UserController@index` |
+| PATCH | `/admin/utilisateurs/{user}/role` | `admin.users.role` | `UserController@role` |
+| GET | `/inscription` | `register` | `Auth\RegisterController@create` |
+| POST | `/inscription` | `register.store` | `Auth\RegisterController@store` |
+| GET | `/connexion` | `login` | `Auth\LoginController@create` |
+| POST | `/connexion` | `login.store` | `Auth\LoginController@store` |
+| POST | `/deconnexion` | `logout` | `Auth\LoginController@destroy` |
 
 ## Comparaison avec le starter kit Livewire
 
 | Critère | Mini-CMS (authentification manuelle) | Starter kit Livewire |
 |---|---|---|
 | Routes d'authentification | Définies dans `routes/web.php` : inscription, connexion et déconnexion. | Enregistrées par Fortify depuis son paquet ; absentes de `routes/web.php`. |
-| Inscription | `Auth\\RegisterController`. | `app/Actions/Fortify/CreateNewUser.php` et `resources/views/pages/auth/register.blade.php`. |
-| Connexion | `Auth\\LoginController::store` avec `Auth::attempt()` et régénération de session. | Contrôleur Fortify et `resources/views/pages/auth/login.blade.php`. |
-| Déconnexion | `Auth\\LoginController::destroy` : logout, invalidation de session et régénération du token CSRF. | Route logout de Fortify et `app/Livewire/Actions/Logout.php`. |
+| Inscription | `Auth\RegisterController`. | `app/Actions/Fortify/CreateNewUser.php` et `resources/views/pages/auth/register.blade.php`. |
+| Connexion | `Auth\LoginController::store` avec `Auth::attempt()` et régénération de session. | Contrôleur Fortify et `resources/views/pages/auth/login.blade.php`. |
+| Déconnexion | `Auth\LoginController::destroy` : logout, invalidation de session et régénération du token CSRF. | Route logout de Fortify et `app/Livewire/Actions/Logout.php`. |
 | Limitation des tentatives | Non implémentée dans Mini-CMS. | 5 tentatives par minute par e-mail et adresse IP, selon la configuration du kit étudiée dans le cours. |
 | Mot de passe oublié | Non implémenté. | Fonctionnalité de réinitialisation activable dans `config/fortify.php`. |
 | Vérification de l'e-mail | Non implémentée. | Fonctionnalité prévue par Fortify ; middleware `verified` sur le tableau de bord. |
