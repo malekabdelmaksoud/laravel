@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\User;
 use App\Models\Post;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 it('shows the posts list', function () {
