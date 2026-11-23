@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\User;
 use App\Models\Tag;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 function tagAdminData(array $overrides = []): array
