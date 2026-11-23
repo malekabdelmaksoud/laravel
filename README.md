@@ -5,12 +5,14 @@ Projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13, PHP 8.3+), 3
 Auteur : Prenom Nom, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (\`lab-01\`, \`lab-01b\`, puis un tag par session).
-## État actuel (tag lab-05b)
+## État actuel (Lab 06 en cours)
 
 - Back-office des catégories et des tags sous `/admin` (`CategoryController`, `TagController`), protégé par le middleware `writable`, avec Form Requests et messages flash.
 - Messages de validation en français (`lang/fr/validation.php`, `APP_LOCALE=fr`), avec des noms de champs lisibles et un message propre au slug des catégories.
 - Pages 404 et 503 affichées dans le layout du site (`resources/views/errors`).
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest` et `ErrorPagesTest`.
+- Authentification : inscription, connexion/déconnexion et espace « Mes articles » réservé aux utilisateurs connectés.
+- Autorisation : la `PostPolicy` empêche un auteur de modifier l’article d’un autre utilisateur. Le test manuel de `/posts/9/edit` avec un compte différent a renvoyé `403 – This action is unauthorized.`
+- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest` et `ErrorPagesTest` (les tests complets restent à relancer avant validation finale).
 
 
 
@@ -109,6 +111,14 @@ Back-office des catégories et des tags, messages de validation en français, pa
 ![Formulaire de catégorie envoyé vide, avec les messages de validation en français](screenshots/s10-validation.png)
 
 ![Page 404 du site pour une adresse inconnue](screenshots/s10-404.png)
+
+### Lab 06 — Session 11
+
+- Connexion vérifiée : le nom de l’utilisateur connecté et le message « Vous êtes connecté. » sont affichés.
+- Autorisation vérifiée : un utilisateur connecté ne peut pas modifier l’article n° 9, appartenant à un autre auteur ; Laravel répond `403 – This action is unauthorized.`.
+- Captures à conserver dans le dossier `screenshots/` :
+  - `s11-connexion.png` — page après connexion.
+  - `s11-interdit.png` — réponse 403 sur `/posts/9/edit`.
 
 ## Routes disponibles
 
