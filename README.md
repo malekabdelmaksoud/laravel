@@ -5,13 +5,13 @@ Projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13, PHP 8.3+), 3
 Auteur : Prenom Nom, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (\`lab-01\`, \`lab-01b\`, puis un tag par session).
-## État actuel (tag lab-06b)
+## État actuel (tag lab-07)
 
-- Middleware `admin` (`App\Http\Middleware\EnsureUserIsAdmin`) sur tout `/admin` : un auteur reçoit 403 « Réservé aux administrateurs. ».
-- Gate `manage-tags`, comme `manage-categories` : contrôleur, Form Requests et menu.
-- Brouillons protégés : `PostPolicy::view` et le scope `visibleTo` ; un brouillon n'est visible que par son auteur et les administrateurs.
-- Tests d'autorisation : `AdminAccessTest` (7 tests) et `PostVisibilityTest` (5 tests), en plus des fichiers de la session 11.
-- Comparaison écrite avec le starter kit Livewire (section ci-dessous).
+- API JSON en lecture seule, installée avec `php artisan install:api` (Sanctum installé ; les jetons arrivent en session 14).
+- `GET /api/posts` : articles publiés, paginés (`?per_page=` de 1 à 50, 5 par défaut), avec auteur et catégorie.
+- `GET /api/posts/{post}` : un article publié ; un brouillon renvoie 403 et un numéro inconnu 404, en JSON.
+- Réponses mises en forme par `PostResource` et `CategoryResource` : ni e-mail ni rôle des auteurs, dates ISO 8601.
+- Testée avec Postman et `curl.exe -H "Accept: application/json"`.
 
 
 ## Données de démonstration
@@ -122,6 +122,12 @@ Back-office des catégories et des tags, messages de validation en français, pa
 
 ![Barre de navigation d'un compte auteur, sans les liens Catégories et Tags](screenshots/s12-menu-auteur.png)
 
+### Session 13
+
+![Postman : réponse JSON de GET /api/posts?per_page=2, avec data, links et meta](screenshots/s13-postman-liste.png)
+
+![Postman : réponse 422 de GET /api/posts?per_page=500, avec le message en français](screenshots/s13-postman-422.png)
+
 ## Routes disponibles
 
 | Méthode | URI | Nom | Action |
@@ -159,6 +165,8 @@ Back-office des catégories et des tags, messages de validation en français, pa
 | GET | `/connexion` | `login` | `Auth\LoginController@create` |
 | POST | `/connexion` | `login.store` | `Auth\LoginController@store` |
 | POST | `/deconnexion` | `logout` | `Auth\LoginController@destroy` |
+| GET | `/api/posts` | `api.posts.index` | `Api\PostController@index` |
+| GET | `/api/posts/{post}` | `api.posts.show` | `Api\PostController@show` |
 
 ## Comparaison avec le starter kit Livewire
 
