@@ -9,6 +9,9 @@
         @can('manage-categories')
             <x-nav-link to="admin.categories.index" match="admin.categories.*">Catégories</x-nav-link>
         @endcan
+        @can('manage-tags')
+            <x-nav-link to="admin.tags.index" match="admin.tags.*">Tags</x-nav-link>
+        @endcan
 
         <div class="ml-auto flex flex-wrap items-center gap-2">
             @auth
@@ -17,7 +20,6 @@
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
                     <button type="submit" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">Déconnexion</button>
                 </form>
             @endauth
