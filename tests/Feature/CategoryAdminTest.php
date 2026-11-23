@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\User;
 use App\Models\Category;
 use App\Models\Post;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 function categoryAdminData(array $overrides = []): array
